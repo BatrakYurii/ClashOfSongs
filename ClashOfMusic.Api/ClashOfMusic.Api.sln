@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfMusic.Api", "ClashOfMusic.Api\ClashOfMusic.Api.csproj", "{AC9A9481-D11C-448F-96B1-806F51D45D3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClashOfMusic.Api", "ClashOfMusic.Api\ClashOfMusic.Api.csproj", "{AC9A9481-D11C-448F-96B1-806F51D45D3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfMusic.Api.Services", "..\ClashOfMusic.Api.Services\ClashOfMusic.Api.Services.csproj", "{11033F88-21CC-4CAF-B28E-3308A8802B13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfMusic.Api.Data", "..\ClashOfMusic.Api.Data\ClashOfMusic.Api.Data.csproj", "{CDD0AE5F-498A-4A27-984F-855A8E630DCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{AC9A9481-D11C-448F-96B1-806F51D45D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC9A9481-D11C-448F-96B1-806F51D45D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC9A9481-D11C-448F-96B1-806F51D45D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11033F88-21CC-4CAF-B28E-3308A8802B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11033F88-21CC-4CAF-B28E-3308A8802B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11033F88-21CC-4CAF-B28E-3308A8802B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11033F88-21CC-4CAF-B28E-3308A8802B13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD0AE5F-498A-4A27-984F-855A8E630DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD0AE5F-498A-4A27-984F-855A8E630DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD0AE5F-498A-4A27-984F-855A8E630DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD0AE5F-498A-4A27-984F-855A8E630DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
