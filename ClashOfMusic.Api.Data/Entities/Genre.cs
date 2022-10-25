@@ -10,5 +10,6 @@ namespace ClashOfMusic.Api.Data.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public IEnumerable<GenresSongs> GenresSongs { get; set; }
     }
 }

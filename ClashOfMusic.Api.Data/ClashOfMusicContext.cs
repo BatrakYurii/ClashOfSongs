@@ -20,7 +20,9 @@ namespace ClashOfMusic.Api.Data
 
         public DbSet<PlayList> PlayLists { get; set; }
         public DbSet<Song> Songs { get; set; }
-        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Genre> Genres { get; set; }        
+        public DbSet<PlayListsSongs> PlayListsSongs { get; set; }
+        public DbSet<GenresSongs> GenresSongs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
