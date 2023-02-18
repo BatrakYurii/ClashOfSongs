@@ -9,11 +9,11 @@ namespace ClashOfMusic.Api.Controllers
     [ApiController]
     public class PlayListController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        public PlayListController(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
+        //private readonly IMapper _mapper;
+        //public PlayListController(IMapper mapper)
+        //{
+        //    _mapper = mapper;
+        //}
 
         [HttpGet]
         [Route("GetPlaylists")]

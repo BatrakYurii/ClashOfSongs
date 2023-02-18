@@ -1,37 +1,51 @@
 using ClashOfMusic.Api.Configuration;
-using ClashOfMusic.Api.Data;
-using ClashOfMusic.Api.Data.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Text.Json.Serialization;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using ClashOfMusic.Api.Configuration.Abstractions;
 using ClashOfMusic.Api.Configuration.Seeding;
+using ClashOfMusic.Api.Data;
+using ClashOfMusic.Api.Data.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("Default");
-//Configuration["connectionStrings:Default"];
 
-builder.Services.AddDbContext<ClashOfMusicContext>(options => {
-    options.UseSqlServer(connectionString);
-});
+//Configuration["connectionStrings:Default"];
+builder.Services.AddScoped<ISeedDataToDB, SeedDataToDB>();
+
+
 
 
 
  
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(x =>
-x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); ;
+x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+builder.Services.AddDbContext<ClashOfMusicContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+});
+
 builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
    .AddEntityFrameworkStores<ClashOfMusicContext>();
 
-var jwtSection = builder.Configuration.GetSection("JwtBearerTokenSettings");
+var jwtSection = builder.Configuration.GetSection("JwtBearerTokenSetting");
 builder.Services.Configure<JwtBearerTokenSetting>(jwtSection);
 var jwtBearerTokenSettings = jwtSection.Get<JwtBearerTokenSetting>();
 var key = Encoding.ASCII.GetBytes(jwtBearerTokenSettings.SecretKey);
@@ -69,6 +83,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//SeedDatabase();
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -79,8 +95,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-var seedService =  app.Services.GetService<ISeedDataToDB>();
-if(seedService != null)
-    await seedService.SeedNeccessaryData();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbInitializer = scope.ServiceProvider.GetRequiredService<ISeedDataToDB>();
+//    dbInitializer.SeedNeccessaryData();
+//}
+//await app.Services.GetService<SeedDataToDB>().SeedNeccessaryData();
+////if(seedService != null)
+//     await seedService.SeedNeccessaryData();
 
 app.Run();
