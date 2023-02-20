@@ -10,7 +10,7 @@ namespace ClashOfMusic.Api.Services.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string YouTubeLink { get; set; }
+        public string YouTube_Link { get; set; }
 
     }
 }

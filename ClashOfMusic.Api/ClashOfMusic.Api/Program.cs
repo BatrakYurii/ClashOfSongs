@@ -3,6 +3,8 @@ using ClashOfMusic.Api.Configuration.Abstractions;
 using ClashOfMusic.Api.Configuration.Seeding;
 using ClashOfMusic.Api.Data;
 using ClashOfMusic.Api.Data.Entities;
+using ClashOfMusic.Api.Services.Abstractions;
+using ClashOfMusic.Api.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,13 +29,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 //Configuration["connectionStrings:Default"];
-builder.Services.AddScoped<ISeedDataToDB, SeedDataToDB>();
+builder.Services.AddTransient<ISeedDataToDB, SeedDataToDB>();
+builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
 
 
-
-
-
- 
+builder.Configuration.AddJsonFile("appsetting.json");
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
