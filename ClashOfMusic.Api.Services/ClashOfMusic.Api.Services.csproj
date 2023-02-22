@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.60.0.2945" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClashOfMusic.Api.Data\ClashOfMusic.Api.Data.csproj" />
   </ItemGroup>
 

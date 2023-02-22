@@ -24,13 +24,13 @@ namespace ClashOfMusic.Api.Services.Services
         {
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
-                ApiKey = _config.GetSection("ApiKey").Value,
+                ApiKey = _config.GetSection("YouTubeApiSetting").GetSection("ApiKey").Value,
                 ApplicationName = this.GetType().ToString()
             });
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = textParamentr; // Replace with your search term.
-            searchListRequest.MaxResults = 8;
+            searchListRequest.MaxResults = 20;
             searchListRequest.Type = "video";
 
 
@@ -39,7 +39,7 @@ namespace ClashOfMusic.Api.Services.Services
 
             
 
-            var videos = searchListResponse.Items.Select((x, i) => new SongModel { Title = x.Snippet.Title, YouTube_Link = x.Id.VideoId, Id=i + 1}).ToList();
+            var videos = searchListResponse.Items.Select(x => new SongModel { Title = x.Snippet.Title, YouTube_Link = x.Id.VideoId }).ToList();
             return videos;
         }
     }

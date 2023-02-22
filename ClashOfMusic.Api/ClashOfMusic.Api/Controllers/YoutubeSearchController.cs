@@ -22,7 +22,7 @@ namespace ClashOfMusic.Api.Controllers
 
         [HttpGet]
         [Route("Get/{textParamentr}")]
-        public async Task<IEnumerable<SongViewModel>> Get(string textParamentr)
+        public async Task<IEnumerable<SongViewModel>> Get([FromRoute] string textParamentr)
         {
             var songModels = await _youtubeSearchServices.Get(textParamentr);
 

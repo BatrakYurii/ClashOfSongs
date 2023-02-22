@@ -27,46 +27,12 @@ namespace ClashOfMusic.Api.Data
         }
 
         public DbSet<PlayList> PlayLists { get; set; }
-        public DbSet<Song> Songs { get; set; }
-        public DbSet<Genre> Genres { get; set; }        
+        public DbSet<Song> Songs { get; set; }        
         public DbSet<PlayListsSongs> PlayListsSongs { get; set; }
-        public DbSet<GenresSongs> GenresSongs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Genre>().HasData(
-                new Genre
-                {
-                    Id = 1,
-                    Title = "Pop"
-                },
-                new Genre
-                {
-                    Id = 2,
-                    Title = "Hip-hop"
-                },new Genre
-                {
-                    Id = 3,
-                    Title = "Trap"
-                },
-                new Genre
-                {
-                    Id = 4,
-                    Title = "Rock"
-                },
-                new Genre
-                {
-                    Id = 5,
-                    Title = "Rhythm and blues"
-                },
-                new Genre
-                {
-                    Id = 6,
-                    Title = "Disco"
-                }
-                );
         }
     }
 }

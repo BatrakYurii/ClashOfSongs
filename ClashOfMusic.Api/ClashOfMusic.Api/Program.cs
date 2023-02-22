@@ -2,7 +2,10 @@ using ClashOfMusic.Api.Configuration;
 using ClashOfMusic.Api.Configuration.Abstractions;
 using ClashOfMusic.Api.Configuration.Seeding;
 using ClashOfMusic.Api.Data;
+using ClashOfMusic.Api.Data.Abstractions;
 using ClashOfMusic.Api.Data.Entities;
+using ClashOfMusic.Api.Data.Repositories;
+using ClashOfMusic.Api.Mapper;
 using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,9 +34,15 @@ var builder = WebApplication.CreateBuilder(args);
 //Configuration["connectionStrings:Default"];
 builder.Services.AddTransient<ISeedDataToDB, SeedDataToDB>();
 builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
+builder.Services.AddTransient<IPlayListServices, PlayListServices>();
+builder.Services.AddTransient<IPlayListRepository, PlayListRepositiory>();
 
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile(new MapperProfile());
+});
 
-builder.Configuration.AddJsonFile("appsetting.json");
+builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
