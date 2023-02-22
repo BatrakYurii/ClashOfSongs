@@ -52,16 +52,15 @@ namespace ClashOfMusic.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Genres",
+                name: "Songs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    YouTube_Link = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
+                    table.PrimaryKey("PK_Songs", x => x.YouTube_Link);
                 });
 
             migrationBuilder.CreateTable(
@@ -176,7 +175,8 @@ namespace ClashOfMusic.Api.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -190,59 +190,13 @@ namespace ClashOfMusic.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Songs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    YouTube_Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlayListId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Songs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Songs_PlayLists_PlayListId",
-                        column: x => x.PlayListId,
-                        principalTable: "PlayLists",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GenresSongs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GenreId = table.Column<int>(type: "int", nullable: false),
-                    SongId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GenresSongs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GenresSongs_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GenresSongs_Songs_SongId",
-                        column: x => x.SongId,
-                        principalTable: "Songs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PlayListsSongs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PlayListId = table.Column<int>(type: "int", nullable: false),
-                    SongId = table.Column<int>(type: "int", nullable: false)
+                    SongId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -257,21 +211,8 @@ namespace ClashOfMusic.Api.Data.Migrations
                         name: "FK_PlayListsSongs_Songs_SongId",
                         column: x => x.SongId,
                         principalTable: "Songs",
-                        principalColumn: "Id",
+                        principalColumn: "YouTube_Link",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Genres",
-                columns: new[] { "Id", "Title" },
-                values: new object[,]
-                {
-                    { 1, "Pop" },
-                    { 2, "Hip-hop" },
-                    { 3, "Trap" },
-                    { 4, "Rock" },
-                    { 5, "Rhythm and blues" },
-                    { 6, "Disco" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -314,16 +255,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GenresSongs_GenreId",
-                table: "GenresSongs",
-                column: "GenreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GenresSongs_SongId",
-                table: "GenresSongs",
-                column: "SongId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PlayLists_UserId",
                 table: "PlayLists",
                 column: "UserId");
@@ -337,11 +268,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                 name: "IX_PlayListsSongs_SongId",
                 table: "PlayListsSongs",
                 column: "SongId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Songs_PlayListId",
-                table: "Songs",
-                column: "PlayListId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -362,22 +288,16 @@ namespace ClashOfMusic.Api.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GenresSongs");
-
-            migrationBuilder.DropTable(
                 name: "PlayListsSongs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "PlayLists");
 
             migrationBuilder.DropTable(
                 name: "Songs");
-
-            migrationBuilder.DropTable(
-                name: "PlayLists");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

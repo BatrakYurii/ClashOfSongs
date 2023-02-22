@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfMusic.Api.Data.Migrations
 {
     [DbContext(typeof(ClashOfMusicContext))]
-    [Migration("20230218184806_InitialCreate")]
+    [Migration("20230221182758_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,78 +24,6 @@ namespace ClashOfMusic.Api.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Genre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "Pop"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Hip-hop"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Title = "Trap"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Title = "Rock"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Title = "Rhythm and blues"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Title = "Disco"
-                        });
-                });
-
-            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.GenresSongs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SongId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenreId");
-
-                    b.HasIndex("SongId");
-
-                    b.ToTable("GenresSongs");
-                });
-
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
                     b.Property<int>("Id")
@@ -104,8 +32,10 @@ namespace ClashOfMusic.Api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -129,8 +59,9 @@ namespace ClashOfMusic.Api.Data.Migrations
                     b.Property<int>("PlayListId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SongId")
-                        .HasColumnType("int");
+                    b.Property<string>("SongId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -143,26 +74,14 @@ namespace ClashOfMusic.Api.Data.Migrations
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Song", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("PlayListId")
-                        .HasColumnType("int");
+                    b.Property<string>("YouTube_Link")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("YouTube_Link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayListId");
+                    b.HasKey("YouTube_Link");
 
                     b.ToTable("Songs");
                 });
@@ -376,25 +295,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.GenresSongs", b =>
-                {
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.Genre", "Genre")
-                        .WithMany("GenresSongs")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.Song", "Song")
-                        .WithMany("GenresSongs")
-                        .HasForeignKey("SongId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
-
-                    b.Navigation("Song");
-                });
-
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
                     b.HasOne("ClashOfMusic.Api.Data.Entities.User", null)
@@ -419,13 +319,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                     b.Navigation("PlayList");
 
                     b.Navigation("Song");
-                });
-
-            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Song", b =>
-                {
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.PlayList", null)
-                        .WithMany("Songs")
-                        .HasForeignKey("PlayListId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -479,22 +372,13 @@ namespace ClashOfMusic.Api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Genre", b =>
-                {
-                    b.Navigation("GenresSongs");
-                });
-
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
                     b.Navigation("PlayListsSongs");
-
-                    b.Navigation("Songs");
                 });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Song", b =>
                 {
-                    b.Navigation("GenresSongs");
-
                     b.Navigation("PlayListsSongs");
                 });
 
