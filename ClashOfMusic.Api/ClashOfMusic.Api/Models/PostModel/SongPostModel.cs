@@ -1,6 +1,6 @@
-﻿namespace ClashOfMusic.Api.Models.ViewModels
+﻿namespace ClashOfMusic.Api.Models.PostModel
 {
-    public class SongViewModel
+    public class SongPostModel
     {
         public string Title { get; set; }
         public string YouTube_Link { get; set; }

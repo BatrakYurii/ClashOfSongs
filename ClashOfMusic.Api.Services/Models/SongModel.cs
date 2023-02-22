@@ -8,7 +8,6 @@ namespace ClashOfMusic.Api.Services.Models
 {
     public class SongModel
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public string YouTube_Link { get; set; }
 

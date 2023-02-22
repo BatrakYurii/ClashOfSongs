@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using ClashOfMusic.Api.Models.PostModel;
 using ClashOfMusic.Api.Models.ViewModels;
+using ClashOfMusic.Api.Services.Abstractions;
+using ClashOfMusic.Api.Services.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,17 +13,57 @@ namespace ClashOfMusic.Api.Controllers
     [ApiController]
     public class PlayListController : ControllerBase
     {
-        //private readonly IMapper _mapper;
-        //public PlayListController(IMapper mapper)
-        //{
-        //    _mapper = mapper;
-        //}
+        private readonly IMapper _mapper;
+        private readonly IPlayListServices _playListServices;
+        public PlayListController(IMapper mapper, IPlayListServices service)
+        {
+            _mapper = mapper;
+            _playListServices = service;
+        }
 
         [HttpGet]
-        [Route("GetPlaylists")]
-        public async Task<IEnumerable<PlayListViewModel>> GetPlayLists()
+        [Route("Get")]
+        public async Task<IEnumerable<PlayListViewModel>> Get()
         {
             return null;
+        }
+
+        [HttpGet]
+        [Route("Get/{id}")]
+        public async Task<PlayListViewModel> GetById(int id)
+        {
+            var playList = await _playListServices.GetById(id);
+            return _mapper.Map<PlayListViewModel>(playList);
+        }
+
+        
+        [HttpPost]
+        [Route("Create")]
+        public async Task<IEnumerable<PlayListViewModel>> Create([FromBody] PlayListPostModel postModel)
+        {
+            var model = _mapper.Map<PlayListModel>(postModel);
+
+            var resultModel = await _playListServices.Create(model);
+
+            return null;
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("ChangePlaylist/{id}")]
+        public async Task<IEnumerable<PlayListViewModel>> Update([FromBody] PlayListPostModel postModel, int id)
+        {
+
+            return null;
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("Delete/{id}")]
+        public async Task Delete([FromRoute] int id)
+        {
+            await _playListServices.DeletePlayList(id);
+            
         }
     }
 }
