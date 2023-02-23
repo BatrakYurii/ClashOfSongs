@@ -31,7 +31,7 @@ namespace ClashOfMusic.Api.Configuration.Seeding
             var roleName = RolesEnum.Admin.GetEnumDescription();
             var adminIfExist = await _userManager.GetUsersInRoleAsync(roleName); 
 
-            if(adminIfExist == null)
+            if(adminIfExist.Count == 0)
             {
                 var admin = new User
                 {
@@ -78,7 +78,10 @@ namespace ClashOfMusic.Api.Configuration.Seeding
 
                 if (!_context.Roles.Any(r => r.Name == role))
                 {
-                    await roleStore.CreateAsync(new IdentityRole(role));
+                    await roleStore.CreateAsync(new IdentityRole(role)
+                    {
+                        NormalizedName = role.ToUpper()
+                    }); 
                 }
             }
         }

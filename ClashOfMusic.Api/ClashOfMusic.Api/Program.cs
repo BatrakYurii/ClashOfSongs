@@ -5,6 +5,7 @@ using ClashOfMusic.Api.Data;
 using ClashOfMusic.Api.Data.Abstractions;
 using ClashOfMusic.Api.Data.Entities;
 using ClashOfMusic.Api.Data.Repositories;
+using ClashOfMusic.Api.Extensions;
 using ClashOfMusic.Api.Mapper;
 using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Services;
@@ -36,6 +37,7 @@ builder.Services.AddTransient<ISeedDataToDB, SeedDataToDB>();
 builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
 builder.Services.AddTransient<IPlayListServices, PlayListServices>();
 builder.Services.AddTransient<IPlayListRepository, PlayListRepositiory>();
+builder.Services.AddScoped<IGameServices, GameServices>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -49,6 +51,16 @@ x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddDbContext<ClashOfMusicContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+});
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
 builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -102,16 +114,10 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapControllers();
 
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbInitializer = scope.ServiceProvider.GetRequiredService<ISeedDataToDB>();
-//    dbInitializer.SeedNeccessaryData();
-//}
-//await app.Services.GetService<SeedDataToDB>().SeedNeccessaryData();
-////if(seedService != null)
-//     await seedService.SeedNeccessaryData();
+await app.CallDBSeed();
 
 app.Run();
