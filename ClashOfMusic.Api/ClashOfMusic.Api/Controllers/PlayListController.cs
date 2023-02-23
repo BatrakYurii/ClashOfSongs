@@ -58,7 +58,7 @@ namespace ClashOfMusic.Api.Controllers
         }
 
         [Authorize]
-        [HttpPut]
+        [HttpDelete]
         [Route("Delete/{id}")]
         public async Task Delete([FromRoute] int id)
         {
