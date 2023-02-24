@@ -21,12 +21,15 @@ namespace ClashOfMusic.Api.Services.Services
 
         public void Choose(string songId)
         {
-            var songs = _session.Get<IList<SongModel>>("playlist");
+            var songs = _session.Get<IList<SongModel>>("songs");
             var songToDelete = songs.Where(x => x.YouTube_Link != songId).FirstOrDefault();
             songs.Remove(songToDelete);
 
             songs.Add(songs.FirstOrDefault());
             songs.RemoveAt(0);
+
+            _session.Set("songs", songs);
+
         }
 
         public IEnumerable<SongModel> GetPair()
@@ -47,7 +50,15 @@ namespace ClashOfMusic.Api.Services.Services
 
         public void Start(PlayListModel playlist)
         {
-            _session.Set<IList<SongModel>>("songs", playlist.Songs.ToList());
+            var songs = SortInRandomOrder(playlist.Songs.ToList());
+            _session.Set<IList<SongModel>>("songs", songs);
+        }
+
+        private List<SongModel> SortInRandomOrder(List<SongModel> songs)
+        {
+            Random random = new Random();
+            songs = songs.OrderBy(_ => random.Next()).ToList();
+            return songs;
         }
     }
 }
