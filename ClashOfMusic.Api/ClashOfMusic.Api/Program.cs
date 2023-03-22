@@ -6,6 +6,7 @@ using ClashOfMusic.Api.Data.Abstractions;
 using ClashOfMusic.Api.Data.Entities;
 using ClashOfMusic.Api.Data.Repositories;
 using ClashOfMusic.Api.Extensions;
+using ClashOfMusic.Api.Helpers;
 using ClashOfMusic.Api.Mapper;
 using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Services;
@@ -37,7 +38,11 @@ builder.Services.AddTransient<ISeedDataToDB, SeedDataToDB>();
 builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
 builder.Services.AddTransient<IPlayListServices, PlayListServices>();
 builder.Services.AddTransient<IPlayListRepository, PlayListRepositiory>();
+builder.Services.AddTransient<IUserServices, UserServices>();
 builder.Services.AddScoped<IGameServices, GameServices>();
+builder.Services.AddScoped<AuthHelper>();
+builder.Services.AddScoped<JwtBearerTokenSetting>();
+
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -45,7 +50,10 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 builder.Configuration.AddJsonFile("appsettings.json");
-builder.Services.AddCors();
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+);
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
@@ -63,7 +71,11 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequireNonAlphanumeric = false;
+    //options.User.AllowedUserNameCharacters = "absdefghih"
+    })
    .AddEntityFrameworkStores<ClashOfMusicContext>();
 
 var jwtSection = builder.Configuration.GetSection("JwtBearerTokenSetting");
@@ -73,7 +85,7 @@ var key = Encoding.ASCII.GetBytes(jwtBearerTokenSettings.SecretKey);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
 })
 .AddJwtBearer(options =>
 {
@@ -101,6 +113,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 

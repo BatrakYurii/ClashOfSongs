@@ -25,7 +25,7 @@ namespace ClashOfMusic.Api.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserPostModel userDetails)
         {
-            if (!ModelState.IsValid || userDetails == null)
+            if (!ModelState.IsValid || userDetails == null || _userManager.FindByEmailAsync(userDetails.Email) == null || _userManager.FindByNameAsync(userDetails.UserName) == null)
             {
                 return new BadRequestObjectResult(new { Message = "User Registration Failed" });
             }

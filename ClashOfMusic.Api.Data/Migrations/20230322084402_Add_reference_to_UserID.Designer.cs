@@ -4,6 +4,7 @@ using ClashOfMusic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfMusic.Api.Data.Migrations
 {
     [DbContext(typeof(ClashOfMusicContext))]
-    partial class ClashOfMusicContextModelSnapshot : ModelSnapshot
+    [Migration("20230322084402_Add_reference_to_UserID")]
+    partial class Add_reference_to_UserID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

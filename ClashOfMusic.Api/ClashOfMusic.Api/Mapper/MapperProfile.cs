@@ -39,6 +39,10 @@ namespace ClashOfMusic.Api.Mapper
                     return dest;
                 });
 
+            //User mapping
+            CreateMap<User, UserViewModel>();
+            CreateMap<UserPostModel, UserModel>();
+            CreateMap<UserModel, User>();
         }
     }
 }

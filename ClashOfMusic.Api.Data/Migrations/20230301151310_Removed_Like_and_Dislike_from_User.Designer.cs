@@ -4,6 +4,7 @@ using ClashOfMusic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfMusic.Api.Data.Migrations
 {
     [DbContext(typeof(ClashOfMusicContext))]
-    partial class ClashOfMusicContextModelSnapshot : ModelSnapshot
+    [Migration("20230301151310_Removed_Like_and_Dislike_from_User")]
+    partial class Removed_Like_and_Dislike_from_User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,6 +95,7 @@ namespace ClashOfMusic.Api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AvatarImage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -136,6 +139,7 @@ namespace ClashOfMusic.Api.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -287,11 +291,9 @@ namespace ClashOfMusic.Api.Data.Migrations
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", "User")
+                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", null)
                         .WithMany("PlayLists")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayListsSongs", b =>

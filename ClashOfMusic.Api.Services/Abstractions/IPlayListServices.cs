@@ -11,6 +11,7 @@ namespace ClashOfMusic.Api.Services.Abstractions
     {
         public Task<IEnumerable<PlayListModel>> GetPlayLists();
         public Task<PlayListModel> GetById(int id);
+        public Task<IEnumerable<PlayListModel>> GetAllByUserId(string userId);
         public Task<PlayListModel> Create(PlayListModel model);
         public Task<PlayListModel> Update(PlayListModel model, int id);
         public Task DeletePlayList(int id);

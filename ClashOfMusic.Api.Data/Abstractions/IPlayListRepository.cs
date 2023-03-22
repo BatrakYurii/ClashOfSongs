@@ -10,6 +10,7 @@ namespace ClashOfMusic.Api.Data.Abstractions
     public interface IPlayListRepository
     {
         public Task<IEnumerable<PlayList>> GetAsync();
+        public Task<IEnumerable<PlayList>> GetAllByUserIdAsync(string userId);
         public Task<PlayList> GetByIdAsync(int id);
         public Task UpdateAsync(int id, PlayList playList);
         public Task CreateAsync(PlayList playList, List<Song> songs);

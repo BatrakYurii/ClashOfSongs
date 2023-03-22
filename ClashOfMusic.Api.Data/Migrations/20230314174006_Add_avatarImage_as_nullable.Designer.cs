@@ -4,6 +4,7 @@ using ClashOfMusic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfMusic.Api.Data.Migrations
 {
     [DbContext(typeof(ClashOfMusicContext))]
-    partial class ClashOfMusicContextModelSnapshot : ModelSnapshot
+    [Migration("20230314174006_Add_avatarImage_as_nullable")]
+    partial class Add_avatarImage_as_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,11 +289,9 @@ namespace ClashOfMusic.Api.Data.Migrations
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", "User")
+                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", null)
                         .WithMany("PlayLists")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayListsSongs", b =>

@@ -29,6 +29,21 @@ namespace ClashOfMusic.Api.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllByUser/{id}")]
+        public async Task<IEnumerable<PlayListViewModel>> GetAllByUserId(string id)
+        {
+            var playList = await _playListServices.GetAllByUserId(id);
+            if (playList == null)
+                return null;
+            else
+            {
+                var playListsViewModels = playList.Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
+                return playListsViewModels;
+            }
+            
+        }
+
+        [HttpGet]
         [Route("Get/{id}")]
         public async Task<PlayListViewModel> GetById(int id)
         {

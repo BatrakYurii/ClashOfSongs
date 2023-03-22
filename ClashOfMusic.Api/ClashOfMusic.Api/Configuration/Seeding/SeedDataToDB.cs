@@ -33,7 +33,7 @@ namespace ClashOfMusic.Api.Configuration.Seeding
 
             if(adminIfExist.Count == 0)
             {
-                var admin = new User
+                var admin = new  User
                 {
                     UserName = "Admin",
                     NormalizedUserName = "ADMIN",
@@ -43,7 +43,7 @@ namespace ClashOfMusic.Api.Configuration.Seeding
                     PhoneNumber = "380975139234"
                 };
 
-                await _userManager.CreateAsync(admin, "administrator");
+                var result = await _userManager.CreateAsync(admin, "Administrator777");
                 await _userManager.AddToRoleAsync(admin, roleName);
             }
         }

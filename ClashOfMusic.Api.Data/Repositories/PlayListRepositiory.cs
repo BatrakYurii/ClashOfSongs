@@ -37,6 +37,12 @@ namespace ClashOfMusic.Api.Data.Repositories
 
         }
 
+        public async Task<IEnumerable<PlayList>> GetAllByUserIdAsync(string userId)
+        {
+            var usersPlaylists = await _ctx.PlayLists.Where(x => x.UserId == userId).ToListAsync();
+            return usersPlaylists;
+        }
+
         public Task<IEnumerable<PlayList>> GetAsync()
         {
             throw new NotImplementedException();

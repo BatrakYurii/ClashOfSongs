@@ -37,6 +37,14 @@ namespace ClashOfMusic.Api.Services.Services
             await _playListRepository.DeleteAsync(id);
         }
 
+        public async Task<IEnumerable<PlayListModel>> GetAllByUserId(string userId)
+        {
+            var playlists = await _playListRepository.GetAllByUserIdAsync(userId);
+            var playListModels = playlists.Select(x => _mapper.Map<PlayListModel>(x)).ToList();
+            return playListModels;
+                
+        }
+
         public async Task<PlayListModel> GetById(int id)
         {
             var model = await _playListRepository.GetByIdAsync(id);
