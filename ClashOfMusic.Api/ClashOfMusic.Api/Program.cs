@@ -39,6 +39,8 @@ builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
 builder.Services.AddTransient<IPlayListServices, PlayListServices>();
 builder.Services.AddTransient<IPlayListRepository, PlayListRepositiory>();
 builder.Services.AddTransient<IUserServices, UserServices>();
+builder.Services.AddTransient<IImageServices, ImageServices>();
+builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IGameServices, GameServices>();
 builder.Services.AddScoped<AuthHelper>();
 builder.Services.AddScoped<JwtBearerTokenSetting>();

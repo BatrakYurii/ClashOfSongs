@@ -3,6 +3,7 @@ using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Models;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -39,8 +40,29 @@ namespace ClashOfMusic.Api.Services.Services
 
             
 
-            var videos = searchListResponse.Items.Select(x => new SongModel { Title = x.Snippet.Title, YouTube_Link = x.Id.VideoId }).ToList();
+            var videos = searchListResponse.Items.Select(x => new SongModel { Title = x.Snippet.Title, YouTube_Link = x.Id.VideoId,  }).ToList();
             return videos;
         }
+
+        //public async Task<IEnumerable<IFormFile>> GetPreviewImages(List<string> urls)
+        //{
+        //    var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+        //    {
+        //        ApiKey = _config.GetSection("YouTubeApiSetting").GetSection("ApiKey").Value,
+        //        ApplicationName = this.GetType().ToString()
+        //    });
+
+        //    foreach(var url in urls)
+        //    {
+        //        var playListImages = youtubeService.Videos.List("snippet");
+        //        playListImages.Id = url;
+
+        //        var responce = await playListImages.ExecuteAsync();
+        //        var video = responce.Items.FirstOrDefault();
+
+        //        var thumbnailUrl = video?.Snippet?.Thumbnails?.High?.Url;
+        //    }
+
+        //}
     }
 }

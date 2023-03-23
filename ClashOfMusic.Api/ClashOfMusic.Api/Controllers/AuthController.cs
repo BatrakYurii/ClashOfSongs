@@ -1,3 +1,4 @@
+using ClashOfMusic.Api.Configuration;
 using ClashOfMusic.Api.Data.Entities;
 using ClashOfMusic.Api.Extensions;
 using ClashOfMusic.Api.Helpers;

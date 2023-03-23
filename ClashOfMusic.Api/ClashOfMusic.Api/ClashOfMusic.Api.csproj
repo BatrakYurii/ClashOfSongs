@@ -32,4 +32,9 @@
     <ProjectReference Include="..\..\ClashOfMusic.Api.Services\ClashOfMusic.Api.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\playListImages\" />
+    <Folder Include="wwwroot\profileImages\" />
+  </ItemGroup>
+
 </Project>

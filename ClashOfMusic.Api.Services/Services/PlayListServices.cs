@@ -27,9 +27,8 @@ namespace ClashOfMusic.Api.Services.Services
         {
             var playListEntity = _mapper.Map<PlayList>(model);
             var songsEntity = model.Songs.Where(x => model.Songs.FirstOrDefault(x) == null).Select(x => _mapper.Map<Song>(x)).ToList();
-            await _playListRepository.CreateAsync(playListEntity, songsEntity);
-            model.Id = playListEntity.Id;
-            return model;
+            var playList = await _playListRepository.CreateAsync(playListEntity, songsEntity);
+            return _mapper.Map<PlayListModel>(playList);
         }
 
         public async Task DeletePlayList(int id)
@@ -51,9 +50,10 @@ namespace ClashOfMusic.Api.Services.Services
             return _mapper.Map<PlayListModel>(model);
         }
 
-        public Task<IEnumerable<PlayListModel>> GetPlayLists()
+        public async Task<IEnumerable<PlayListModel>> GetPlayLists()
         {
-            throw new NotImplementedException();
+            var playListModels = await _playListRepository.GetAsync();
+            return playListModels.Select(x => _mapper.Map<PlayListModel>(x)).ToList();
         }
 
         public Task<PlayListModel> Update(PlayListModel model, int id)

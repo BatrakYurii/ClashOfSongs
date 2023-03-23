@@ -15,17 +15,20 @@ namespace ClashOfMusic.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IPlayListServices _playListServices;
-        public PlayListController(IMapper mapper, IPlayListServices service)
+        private readonly IImageServices _imageServices;
+        public PlayListController(IMapper mapper, IPlayListServices service, IImageServices imageServices)
         {
             _mapper = mapper;
             _playListServices = service;
+            _imageServices = imageServices;
         }
 
         [HttpGet]
         [Route("Get")]
         public async Task<IEnumerable<PlayListViewModel>> Get()
         {
-            return null;
+            var playLists = await _playListServices.GetPlayLists();
+            return playLists.Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
         }
 
         [HttpGet]
@@ -54,11 +57,18 @@ namespace ClashOfMusic.Api.Controllers
         
         [HttpPost]
         [Route("Create")]
-        public async Task<IEnumerable<PlayListViewModel>> Create([FromBody] PlayListPostModel postModel)
+        public async Task<PlayListViewModel> Create([FromBody] PlayListPostModel postModel)
         {
             var model = _mapper.Map<PlayListModel>(postModel);
 
-            var resultModel = await _playListServices.Create(model);
+            var playList = await _playListServices.Create(model);
+
+            if(playList != null)
+            {
+                await _imageServices.UploadPlayListImages(playList.Id, playList.Songs.Select(x => x.YouTube_Link).ToList());
+            }
+
+
 
             return null;
         }

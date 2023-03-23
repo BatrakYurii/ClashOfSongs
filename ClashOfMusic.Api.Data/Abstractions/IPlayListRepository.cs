@@ -13,7 +13,7 @@ namespace ClashOfMusic.Api.Data.Abstractions
         public Task<IEnumerable<PlayList>> GetAllByUserIdAsync(string userId);
         public Task<PlayList> GetByIdAsync(int id);
         public Task UpdateAsync(int id, PlayList playList);
-        public Task CreateAsync(PlayList playList, List<Song> songs);
+        public Task<PlayList> CreateAsync(PlayList playList, List<Song> songs);
         public Task DeleteAsync(int id);
     }
 }

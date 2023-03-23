@@ -3,6 +3,7 @@ using ClashOfMusic.Api.Data.Entities;
 using ClashOfMusic.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -15,10 +16,10 @@ namespace ClashOfMusic.Api.Helpers
     {
         private readonly UserManager<User> _userManager;
         private readonly JwtBearerTokenSetting _jwtBearerTokenSetting;
-        public AuthHelper(UserManager<User> userManager, JwtBearerTokenSetting jwtBearerTokenSetting)
+        public AuthHelper(UserManager<User> userManager, IOptions<JwtBearerTokenSetting> jwtTokenOptions)
         {
             _userManager = userManager;
-            _jwtBearerTokenSetting = jwtBearerTokenSetting;
+            _jwtBearerTokenSetting = jwtTokenOptions.Value;
         }
 
         public async Task<User> ValidateUserAsync(Login login)

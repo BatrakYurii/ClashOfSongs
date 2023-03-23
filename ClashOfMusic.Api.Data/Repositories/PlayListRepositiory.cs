@@ -18,11 +18,13 @@ namespace ClashOfMusic.Api.Data.Repositories
             _ctx = ctx;
         }
 
-        public async Task CreateAsync(PlayList playList, List<Song> songs)
+        public async Task<PlayList> CreateAsync(PlayList playList, List<Song> songs)
         {
             await _ctx.PlayLists.AddAsync(playList);
             await _ctx.Songs.AddRangeAsync(songs);
             await _ctx.SaveChangesAsync();
+;           var dataForImages = new PlayList { Id = playList.Id, PlayListsSongs = playList.PlayListsSongs.Take(4) };
+            return dataForImages;
         }
 
         public async Task DeleteAsync(int id)
@@ -43,9 +45,10 @@ namespace ClashOfMusic.Api.Data.Repositories
             return usersPlaylists;
         }
 
-        public Task<IEnumerable<PlayList>> GetAsync()
+        public async Task<IEnumerable<PlayList>> GetAsync()
         {
-            throw new NotImplementedException();
+            var playLists = await _ctx.PlayLists.Take(100).ToListAsync();
+            return playLists;
         }
 
         public async Task<PlayList> GetByIdAsync(int id)
