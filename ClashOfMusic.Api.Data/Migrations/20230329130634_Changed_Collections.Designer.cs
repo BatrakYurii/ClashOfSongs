@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfMusic.Api.Data.Migrations
 {
     [DbContext(typeof(ClashOfMusicContext))]
-    [Migration("20230301151310_Removed_Like_and_Dislike_from_User")]
-    partial class Removed_Like_and_Dislike_from_User
+    [Migration("20230329130634_Changed_Collections")]
+    partial class Changed_Collections
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,28 @@ namespace ClashOfMusic.Api.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlayListId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayListId");
+
+                    b.ToTable("Images");
+                });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
@@ -95,7 +117,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AvatarImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -139,7 +160,6 @@ namespace ClashOfMusic.Api.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -289,11 +309,24 @@ namespace ClashOfMusic.Api.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Image", b =>
+                {
+                    b.HasOne("ClashOfMusic.Api.Data.Entities.PlayList", "PlayList")
+                        .WithMany("PreviewImages")
+                        .HasForeignKey("PlayListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlayList");
+                });
+
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
-                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", null)
+                    b.HasOne("ClashOfMusic.Api.Data.Entities.User", "User")
                         .WithMany("PlayLists")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayListsSongs", b =>
@@ -369,6 +402,8 @@ namespace ClashOfMusic.Api.Data.Migrations
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.PlayList", b =>
                 {
                     b.Navigation("PlayListsSongs");
+
+                    b.Navigation("PreviewImages");
                 });
 
             modelBuilder.Entity("ClashOfMusic.Api.Data.Entities.Song", b =>

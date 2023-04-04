@@ -28,10 +28,8 @@ namespace ClashOfMusic.Api.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    AvatarImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Like = table.Column<int>(type: "int", nullable: false),
-                    Dislike = table.Column<int>(type: "int", nullable: false),
+                    AvatarImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -190,6 +188,26 @@ namespace ClashOfMusic.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlayListId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_PlayLists_PlayListId",
+                        column: x => x.PlayListId,
+                        principalTable: "PlayLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlayListsSongs",
                 columns: table => new
                 {
@@ -255,6 +273,11 @@ namespace ClashOfMusic.Api.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Images_PlayListId",
+                table: "Images",
+                column: "PlayListId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlayLists_UserId",
                 table: "PlayLists",
                 column: "UserId");
@@ -286,6 +309,9 @@ namespace ClashOfMusic.Api.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "PlayListsSongs");

@@ -26,8 +26,11 @@ namespace ClashOfMusic.Api.Services.Services
         public async Task<PlayListModel> Create(PlayListModel model)
         {
             var playListEntity = _mapper.Map<PlayList>(model);
-            var songsEntity = model.Songs.Where(x => model.Songs.FirstOrDefault(x) == null).Select(x => _mapper.Map<Song>(x)).ToList();
-            var playList = await _playListRepository.CreateAsync(playListEntity, songsEntity);
+            if (model.Songs.Count % 8 != 0)
+                throw new Exception("Songs count must be 16,32,64,128 or 256");
+
+            //var songsEntity = model.Songs.Select(x => _mapper.Map<Song>(x)).ToList();
+            var playList = await _playListRepository.CreateAsync(playListEntity);
             return _mapper.Map<PlayListModel>(playList);
         }
 

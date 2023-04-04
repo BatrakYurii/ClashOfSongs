@@ -19,11 +19,13 @@ namespace ClashOfMusic.Api.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.PlayListsSongs, opt => opt.MapFrom(src => src.Songs.Select(s => new PlayListsSongs { SongId = s.YouTube_Link})));
+                .ForMember(dest => dest.PlayListsSongs, opt => opt.MapFrom(src => src.Songs.Select(s => new PlayListsSongs { Song = new Song { Title = s.Title, YouTube_Link = s.YouTube_Link } })));
             ;
             CreateMap<PlayList, PlayListModel>()
-                .ForMember(dest => dest.Songs, opt => opt.MapFrom(src => src.PlayListsSongs));
+                .ForMember(dest => dest.Songs, opt => opt.MapFrom(src => src.PlayListsSongs))
+                .ForMember(dest => dest.PreviewImages, opt => opt.MapFrom(src => src.PreviewImages.Select(img => img.Path)));
             CreateMap<PlayListModel, PlayListViewModel>();
+
 
             //YoutubeSearch mapping
             CreateMap<SongModel, SongViewModel>();
@@ -43,6 +45,10 @@ namespace ClashOfMusic.Api.Mapper
             CreateMap<User, UserViewModel>();
             CreateMap<UserPostModel, UserModel>();
             CreateMap<UserModel, User>();
+
+            //Image mapping
+            //CreateMap<Image, string>()
+            //    .ForMember(dest => dest, opt => opt.MapFrom(src => src.Path));
         }
     }
 }

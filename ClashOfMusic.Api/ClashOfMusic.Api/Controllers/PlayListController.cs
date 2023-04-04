@@ -63,6 +63,7 @@ namespace ClashOfMusic.Api.Controllers
 
             var playList = await _playListServices.Create(model);
 
+            
             if(playList != null)
             {
                 await _imageServices.UploadPlayListImages(playList.Id, playList.Songs.Select(x => x.YouTube_Link).ToList());
@@ -82,7 +83,7 @@ namespace ClashOfMusic.Api.Controllers
             return null;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpDelete]
         [Route("Delete/{id}")]
         public async Task Delete([FromRoute] int id)

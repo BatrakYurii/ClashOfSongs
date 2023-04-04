@@ -55,7 +55,7 @@ namespace ClashOfMusic.Api.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] Login loginCredential)
+        public async Task<object> Login([FromBody] Login loginCredential)
         {
             User identityUser;
 
@@ -71,7 +71,13 @@ namespace ClashOfMusic.Api.Controllers
             return Ok(
                 new
                 {
-                    AccessToken = token
+                    AccessToken = token,
+                    UserId = identityUser.Id,
+                    UserName = identityUser.UserName,
+                    Email = identityUser.Email,
+                    ImageUrl = identityUser.AvatarImage,
+                    Roles = roles,
+                    isLogin = true
                 });
         }
     }

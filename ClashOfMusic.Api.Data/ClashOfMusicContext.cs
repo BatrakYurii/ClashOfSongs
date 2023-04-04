@@ -29,10 +29,19 @@ namespace ClashOfMusic.Api.Data
         public DbSet<PlayList> PlayLists { get; set; }
         public DbSet<Song> Songs { get; set; }        
         public DbSet<PlayListsSongs> PlayListsSongs { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<PlayList>()
+        .HasMany(p => p.PlayListsSongs)
+        .WithOne(ps => ps.PlayList)
+        .HasForeignKey(ps => ps.PlayListId);
+            builder.Entity<Song>()
+                .HasMany(s => s.PlayListsSongs)
+                .WithOne(ps => ps.Song)
+                .HasForeignKey(ps => ps.SongId);
         }
     }
 }

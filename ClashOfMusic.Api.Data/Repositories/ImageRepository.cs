@@ -1,4 +1,5 @@
 ﻿using ClashOfMusic.Api.Data.Abstractions;
+using ClashOfMusic.Api.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,12 @@ namespace ClashOfMusic.Api.Data.Repositories
             var playlist = _ctx.PlayLists.Where(x => x.Id == playListId).FirstOrDefault();
             if(playlist != null)
             {
-                playlist.PreviewImages = paths;
-            }
+                foreach (var path in paths)
+                {
+                    _ctx.Images.Add(new Image() { Path = path, PlayListId = playListId });
+
+                }
+            }            
 
             await _ctx.SaveChangesAsync();
         }

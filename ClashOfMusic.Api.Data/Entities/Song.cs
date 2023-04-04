@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -13,9 +14,9 @@ namespace ClashOfMusic.Api.Data.Entities
         public string Title { get; set; }
 
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string YouTube_Link { get; set; }
 
-        [JsonIgnore]
-        public IEnumerable<PlayListsSongs> PlayListsSongs { get; set; }
+        public ICollection<PlayListsSongs> PlayListsSongs { get; set; }
     }
 }

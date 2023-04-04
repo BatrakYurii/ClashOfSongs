@@ -37,7 +37,7 @@ namespace ClashOfMusic.Api.Controllers
 
             var type = Path.GetExtension(imgFile.FileName);
 
-            if(!(type == ".jpg" || type == ".png"))
+            if(!(type == ".jpg" || type == ".png" || type == ".jpeg"))
             {
                 throw new BadImageFormatException("Incorrect file format");
             }

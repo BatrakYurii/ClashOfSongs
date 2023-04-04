@@ -10,7 +10,6 @@ namespace ClashOfMusic.Api.Data.Entities
     {
         public int Id { get; set; }
         public string Path { get; set; }
-        public string Title { get; set; }
         public int PlayListId { get; set; }
         public PlayList PlayList { get; set; }
     }

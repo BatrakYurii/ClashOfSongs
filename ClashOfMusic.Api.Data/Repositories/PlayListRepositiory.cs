@@ -18,12 +18,51 @@ namespace ClashOfMusic.Api.Data.Repositories
             _ctx = ctx;
         }
 
-        public async Task<PlayList> CreateAsync(PlayList playList, List<Song> songs)
+        public async Task<PlayList> CreateAsync(PlayList playList)
         {
-            await _ctx.PlayLists.AddAsync(playList);
-            await _ctx.Songs.AddRangeAsync(songs);
-            await _ctx.SaveChangesAsync();
-;           var dataForImages = new PlayList { Id = playList.Id, PlayListsSongs = playList.PlayListsSongs.Take(4) };
+            try
+            {
+                //var songs = playList.PlayListsSongs.Select(x => x.Song).ToList();
+                //playList.PlayListsSongs = null;
+
+                //await _ctx.Songs.AddRangeAsync(songs);
+                //await _ctx.PlayLists.AddAsync(playList);
+
+                //await _ctx.SaveChangesAsync();
+
+
+                //var playListsSongs = songs.Select(x => new PlayListsSongs { PlayListId = playList.Id, SongId = x.YouTube_Link }).ToList();
+                //await _ctx.PlayListsSongs.AddRangeAsync(playListsSongs);
+
+                //await _ctx.SaveChangesAsync();
+
+                var songsFromModel = playList.PlayListsSongs.Select(x => x.Song.YouTube_Link).ToList();
+                var songsFromDb = _ctx.Songs.Select(x => x.YouTube_Link).ToList();
+                var anuniqueSongsId = songsFromModel.Where(x => songsFromDb.Contains(x)).ToList();
+
+                foreach (var el in anuniqueSongsId)
+                {
+                    var playListsSongsModel = playList.PlayListsSongs.Where(x => x.Song.YouTube_Link == el).FirstOrDefault();
+                    playListsSongsModel.SongId = playListsSongsModel.Song.YouTube_Link;
+                    playListsSongsModel.Song = null;
+
+                }
+                //playList.PlayListsSongs.Where(x => anuniqueSongsId.Contains(x.SongId)).ToList();
+
+                await _ctx.PlayLists.AddAsync(playList);
+                await _ctx.SaveChangesAsync();
+
+
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new Exception("PlayList have to have onlly unique entries", e);
+            }
+            catch (Exception)
+            {
+
+            }
+            var dataForImages = new PlayList { Id = playList.Id, PlayListsSongs = playList.PlayListsSongs.Where(x => x.Song != null).Take(4).ToList() };
             return dataForImages;
         }
 
@@ -32,7 +71,20 @@ namespace ClashOfMusic.Api.Data.Repositories
             var playListToRemove = await _ctx.PlayLists.Where(x => x.Id == id).FirstOrDefaultAsync();
             if(playListToRemove != null)
             {
+                var connectModels = await _ctx.PlayListsSongs.Where(x => x.PlayListId == playListToRemove.Id).Select(x => x.SongId).ToListAsync();
+
                 _ctx.PlayLists.Remove(playListToRemove);
+                await _ctx.SaveChangesAsync();
+
+
+                var toDelete = connectModels.Where(x => _ctx.PlayListsSongs.Where(y => y.SongId == x).FirstOrDefault() == null).ToList();
+
+                foreach(var el in toDelete)
+                {
+                    var song = await _ctx.Songs.Where(x => x.YouTube_Link == el).FirstOrDefaultAsync();
+                    _ctx.Songs.Remove(song);
+                }               
+
                 await _ctx.SaveChangesAsync();
             }
             
@@ -47,7 +99,7 @@ namespace ClashOfMusic.Api.Data.Repositories
 
         public async Task<IEnumerable<PlayList>> GetAsync()
         {
-            var playLists = await _ctx.PlayLists.Take(100).ToListAsync();
+            var playLists = await _ctx.PlayLists.Take(100).Include(x => x.PreviewImages).Include(x => x.PlayListsSongs).ThenInclude(x => x.Song).ToListAsync();
             return playLists;
         }
 
@@ -92,7 +144,7 @@ namespace ClashOfMusic.Api.Data.Repositories
                         Title = y.Song.Title,
                         YouTube_Link = y.Song.YouTube_Link
                     }
-                })
+                }).ToList()
             })
             .AsNoTracking()
             .FirstOrDefaultAsync();

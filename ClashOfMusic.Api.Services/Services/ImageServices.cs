@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ClashOfMusic.Api.Services.Services
 {
@@ -47,19 +49,37 @@ namespace ClashOfMusic.Api.Services.Services
             var imagePaths = new List<string>();
             var urls = videoIdentifiers.Select(x => $"https://img.youtube.com/vi/{x}/mqdefault.jpg").ToList();
             
-            using var client = new WebClient();
+            using var client = new HttpClient();
 
 
             foreach(var url in urls)
             {
                 Uri uri = new Uri(url);
-                var image = client.DownloadData(uri);
-                var path = $"{Guid.NewGuid()}.jpg";
-                await File.WriteAllBytesAsync(path, image);
+
+                // Get the file extension
+                var uriWithoutQuery = uri.GetLeftPart(UriPartial.Path);
+                var fileExtension = Path.GetExtension(uriWithoutQuery);
+
+                // Create file path and ensure directory exists
+                var path = Path.Combine("wwwroot","playListImages", $"{Guid.NewGuid()}.jpg");
+                //Directory.CreateDirectory("profileImages");
+
+                // Download the image and write to the file
+                var imageBytes = await client.GetByteArrayAsync(uri);
+                await File.WriteAllBytesAsync(path, imageBytes);
                 imagePaths.Add(path);
 
+
+                //var image = client.DownloadData(uri);
+
+                
+                //var path = Path.Combine("profileImages", $"{Guid.NewGuid()}.jpg");
+                //await File.WriteAllBytesAsync(path, image);
+                //imagePaths.Add(path);
+
             }
-            await _imageRepository.UploadPlayListImages(playListId, imagePaths);
+            var pathForPlayList = imagePaths.Select(x => x.Substring(x.IndexOf('\\') + 1)).ToList();
+            await _imageRepository.UploadPlayListImages(playListId, pathForPlayList);
 
             return;
         }

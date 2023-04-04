@@ -14,8 +14,8 @@ namespace ClashOfMusic.Api.Data.Entities
         public string? Description { get; set; }
         public string? UserId { get; set; }
         public User User { get; set; }
-        public IEnumerable<string> PreviewImages { get; set; }
-        public IEnumerable<PlayListsSongs> PlayListsSongs { get; set; }
+        public IEnumerable<Image> PreviewImages { get; set; }
+        public ICollection<PlayListsSongs> PlayListsSongs { get; set; }
 
     }
 }
