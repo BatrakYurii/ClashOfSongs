@@ -59,6 +59,11 @@ namespace ClashOfMusic.Api.Services.Services
             return playListModels.Select(x => _mapper.Map<PlayListModel>(x)).ToList();
         }
 
+        public async Task IncrementPlayCount(int id)
+        {
+            await _playListRepository.IncrementPlayCount(id);
+        }
+
         public Task<PlayListModel> Update(PlayListModel model, int id)
         {
             throw new NotImplementedException();

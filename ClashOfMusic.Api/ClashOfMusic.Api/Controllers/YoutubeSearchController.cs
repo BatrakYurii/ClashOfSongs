@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ClashOfMusic.Api.Models.ViewModels;
 using ClashOfMusic.Api.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace ClashOfMusic.Api.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Get/{textParamentr}")]
         public async Task<IEnumerable<SongViewModel>> Get([FromRoute] string textParamentr)

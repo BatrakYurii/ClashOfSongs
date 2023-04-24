@@ -12,6 +12,7 @@ using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -36,12 +37,20 @@ var builder = WebApplication.CreateBuilder(args);
 //Configuration["connectionStrings:Default"];
 builder.Services.AddTransient<ISeedDataToDB, SeedDataToDB>();
 builder.Services.AddTransient<IYoutubeSearchServices, YoutubeSearchServices>();
+
 builder.Services.AddTransient<IPlayListServices, PlayListServices>();
 builder.Services.AddTransient<IPlayListRepository, PlayListRepositiory>();
+
 builder.Services.AddTransient<IUserServices, UserServices>();
+
 builder.Services.AddTransient<IImageServices, ImageServices>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
+
+builder.Services.AddTransient<ICommentServices, CommentServices>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+
 builder.Services.AddScoped<IGameServices, GameServices>();
+
 builder.Services.AddScoped<AuthHelper>();
 builder.Services.AddScoped<JwtBearerTokenSetting>();
 
@@ -54,7 +63,7 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+        policy.WithOrigins("https://localhost:3000").AllowAnyHeader().AllowAnyHeader().AllowAnyMethod().AllowCredentials())
 );
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -71,7 +80,20 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.IdleTimeout = TimeSpan.FromMinutes(30);
+    //options.Cookie.SameSite = SameSiteMode.None;
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
+
+//var cookieOptions = builder.Configuration.GetValue<bool>("HttpCookies:RequireSsl");
+
+//builder.Services.Configure<CookiePolicyOptions>(options =>
+//{
+//    options.MinimumSameSitePolicy = SameSiteMode.None;
+//    options.HttpOnly = HttpOnlyPolicy.Always;
+//    options.Secure = cookieOptions ? CookieSecurePolicy.Always : CookieSecurePolicy.None;
+//    options.ConsentCookie.SameSite = SameSiteMode.None;
+//    options.ConsentCookie.IsEssential = true;
+//});
 
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.SignIn.RequireConfirmedAccount = true;
@@ -101,6 +123,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.Cookie.SameSite = SameSiteMode.None;
+//    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+//});
+
 
 
 builder.Services.AddControllers();
@@ -125,6 +153,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCookiePolicy();
+
 
 app.UseAuthentication();
 

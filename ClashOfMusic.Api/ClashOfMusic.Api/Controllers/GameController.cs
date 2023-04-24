@@ -6,6 +6,7 @@ using ClashOfMusic.Api.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ClashOfMusic.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -22,14 +23,25 @@ namespace ClashOfMusic.Api.Controllers
 
         [HttpPost]
         [Route("StartGame")]
-        public void StartGame([FromBody] PlayListPostModel gamePlaylist)
+        public string StartGame([FromBody] PlayListPostModel gamePlaylist)
         {
-            _gameServices.Start(_mapper.Map<PlayListModel>(gamePlaylist));
+            try
+            {
+                var sessionId = _gameServices.Start(_mapper.Map<PlayListModel>(gamePlaylist));
+                return sessionId;
+                
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return null;
         }
 
-        [HttpPost]
+
+        [HttpGet]
         [Route("Choose/{songId}")]
-        public void Choose([FromRoute] string songId)
+        public void Choose(string songId)
         {
             _gameServices.Choose(songId);
         }

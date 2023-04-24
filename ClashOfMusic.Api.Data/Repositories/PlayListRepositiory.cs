@@ -22,20 +22,6 @@ namespace ClashOfMusic.Api.Data.Repositories
         {
             try
             {
-                //var songs = playList.PlayListsSongs.Select(x => x.Song).ToList();
-                //playList.PlayListsSongs = null;
-
-                //await _ctx.Songs.AddRangeAsync(songs);
-                //await _ctx.PlayLists.AddAsync(playList);
-
-                //await _ctx.SaveChangesAsync();
-
-
-                //var playListsSongs = songs.Select(x => new PlayListsSongs { PlayListId = playList.Id, SongId = x.YouTube_Link }).ToList();
-                //await _ctx.PlayListsSongs.AddRangeAsync(playListsSongs);
-
-                //await _ctx.SaveChangesAsync();
-
                 var songsFromModel = playList.PlayListsSongs.Select(x => x.Song.YouTube_Link).ToList();
                 var songsFromDb = _ctx.Songs.Select(x => x.YouTube_Link).ToList();
                 var anuniqueSongsId = songsFromModel.Where(x => songsFromDb.Contains(x)).ToList();
@@ -93,7 +79,7 @@ namespace ClashOfMusic.Api.Data.Repositories
 
         public async Task<IEnumerable<PlayList>> GetAllByUserIdAsync(string userId)
         {
-            var usersPlaylists = await _ctx.PlayLists.Where(x => x.UserId == userId).ToListAsync();
+            var usersPlaylists = await _ctx.PlayLists.Where(x => x.UserId == userId).Include(x => x.PreviewImages).ToListAsync();
             return usersPlaylists;
         }
 
@@ -105,28 +91,6 @@ namespace ClashOfMusic.Api.Data.Repositories
 
         public async Task<PlayList> GetByIdAsync(int id)
         {
-            //var playList = await _ctx.PlayLists.Where(x => x.Id == id).Include(x => x.PlayListsSongs).ThenInclude(x => x.Song).AsNoTracking().FirstOrDefaultAsync();
-            //var playList = await _ctx.PlayLists
-            //.Where(x => x.Id == id)
-            //.Select(x => new PlayList
-            //{
-            //    Id = x.Id,
-            //    Title = x.Title,
-            //    Description = x.Description,
-            //    PlayListsSongs = x.PlayListsSongs.Select(y => new PlayListsSongs
-            //    {
-            //        Id = y.Id,
-            //        PlayListId = y.PlayListId,
-            //        SongId = y.SongId,
-            //        Song = new Song
-            //        {
-            //            Title = y.Song.Title,
-            //            YouTube_Link = y.Song.YouTube_Link
-            //        }
-            //    })
-            //})
-            //.AsNoTracking()
-            //.FirstOrDefaultAsync();
             var playList = await _ctx.PlayLists
             .Where(x => x.Id == id)
             .Select(x => new PlayList
@@ -149,6 +113,18 @@ namespace ClashOfMusic.Api.Data.Repositories
             .AsNoTracking()
             .FirstOrDefaultAsync();
             return playList;
+        }
+
+        public async Task IncrementPlayCount(int id)
+        {
+            var playList = await _ctx.PlayLists.FirstOrDefaultAsync(x => x.Id == id);
+            
+            if(playList != null)
+            {
+                playList.PlayCount++;
+
+                await _ctx.SaveChangesAsync();
+            }
         }
 
         public Task UpdateAsync(int id, PlayList playList)

@@ -15,5 +15,6 @@ namespace ClashOfMusic.Api.Data.Abstractions
         public Task UpdateAsync(int id, PlayList playList);
         public Task<PlayList> CreateAsync(PlayList playList);
         public Task DeleteAsync(int id);
+        public Task IncrementPlayCount(int id);
     }
 }

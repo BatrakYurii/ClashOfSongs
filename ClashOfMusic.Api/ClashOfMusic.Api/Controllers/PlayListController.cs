@@ -6,6 +6,7 @@ using ClashOfMusic.Api.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ClashOfMusic.Api.Controllers
 {
@@ -54,14 +55,17 @@ namespace ClashOfMusic.Api.Controllers
             return _mapper.Map<PlayListViewModel>(playList);
         }
 
-        
+        [Authorize]
         [HttpPost]
         [Route("Create")]
         public async Task<PlayListViewModel> Create([FromBody] PlayListPostModel postModel)
         {
             var model = _mapper.Map<PlayListModel>(postModel);
 
+            model.UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
             var playList = await _playListServices.Create(model);
+
 
             
             if(playList != null)
@@ -90,6 +94,14 @@ namespace ClashOfMusic.Api.Controllers
         {
             await _playListServices.DeletePlayList(id);
             
+        }
+
+        [HttpPut]
+        [Route("Increment/{id}")]
+        public async Task IncrementPlayCount([FromRoute] int id)
+        {
+            await _playListServices.DeletePlayList(id);
+
         }
     }
 }

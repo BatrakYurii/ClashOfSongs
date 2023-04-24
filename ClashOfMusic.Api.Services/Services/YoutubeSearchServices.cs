@@ -31,18 +31,33 @@ namespace ClashOfMusic.Api.Services.Services
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = textParamentr; // Replace with your search term.
-            searchListRequest.MaxResults = 20;
+            searchListRequest.MaxResults = 8;
             searchListRequest.Type = "video";
 
-
-            // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = await searchListRequest.ExecuteAsync();
 
-            
+            var videoIds = string.Join(",", searchListResponse.Items.Select(x => x.Id.VideoId));
+            var videoListRequest = youtubeService.Videos.List("snippet,statistics");
+            videoListRequest.Id = videoIds;
+            var videoListResponse = await videoListRequest.ExecuteAsync();
 
-            var videos = searchListResponse.Items.Select(x => new SongModel { Title = x.Snippet.Title, YouTube_Link = x.Id.VideoId,  }).ToList();
+            var videos = searchListResponse.Items.Select(x =>
+            {
+                var video = videoListResponse.Items.FirstOrDefault(v => v.Id == x.Id.VideoId);
+                var thumbnailUrl = video?.Snippet.Thumbnails.High.Url;
+                return new SongModel
+                {
+                    Title = x.Snippet.Title,
+                    YouTube_Link = x.Id.VideoId,
+                    ChannelTitle = video?.Snippet.ChannelTitle,
+                    ViewCount = video?.Statistics.ViewCount,
+                    ThumbnailUrl = thumbnailUrl
+                };
+            }).ToList();
+
             return videos;
         }
+
 
         //public async Task<IEnumerable<IFormFile>> GetPreviewImages(List<string> urls)
         //{

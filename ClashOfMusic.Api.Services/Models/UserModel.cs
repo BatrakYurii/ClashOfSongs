@@ -11,6 +11,7 @@ namespace ClashOfMusic.Api.Services.Models
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
+        public string AvatarImage { get; set; }
         public ICollection<PlayListModel> PlayLists { get; set; }
     }
 }

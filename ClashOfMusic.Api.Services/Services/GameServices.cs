@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClashOfMusic.Api.Services.Extentions;
+using System.Net;
 
 namespace ClashOfMusic.Api.Services.Services
 {
@@ -21,37 +22,59 @@ namespace ClashOfMusic.Api.Services.Services
 
         public void Choose(string songId)
         {
-            var songs = _session.Get<IList<SongModel>>("songs");
-            var songToDelete = songs.Where(x => x.YouTube_Link != songId).FirstOrDefault();
-            songs.Remove(songToDelete);
+            try
+            {
+                var songs = _session.Get<IList<SongModel>>("songs");
+                var songToDelete = songs.Where(x => x.YouTube_Link != songId).FirstOrDefault();
+                songs.Remove(songToDelete);
 
-            songs.Add(songs.FirstOrDefault());
-            songs.RemoveAt(0);
+                songs.Add(songs.FirstOrDefault());
+                songs.RemoveAt(0);
 
-            _session.Set("songs", songs);
-
+                _session.Set("songs", songs);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public IEnumerable<SongModel> GetPair()
         {
-            var songs = _session.Get<IList<SongModel>>("songs");
-
-            if(songs.Count > 1)
+            try
             {
-                var pair = songs.Take(2).ToList();
-                return pair;
+                var songs = _session.Get<IList<SongModel>>("songs");
+                if (songs != null)
+                {
+                    if (songs.Count > 1)
+                    {
+                        var pair = songs.Take(2).ToList();
+                        return pair;
+                    }
+                    else
+                    {
+                        return songs;
+                    }
+                }
+                else
+                    throw new ArgumentNullException();
             }
-            else
+            catch (ArgumentNullException e)
             {
-                return songs;
+                throw new HttpRequestException("session was not created", e, HttpStatusCode.InternalServerError);
             }
-           
+            catch (Exception e)
+            {
+                throw new HttpRequestException("An unexpected error occurred", e, HttpStatusCode.InternalServerError);
+            }
         }
 
-        public void Start(PlayListModel playlist)
+
+        public string Start(PlayListModel playlist)
         {
             var songs = SortInRandomOrder(playlist.Songs.ToList());
             _session.Set<IList<SongModel>>("songs", songs);
+            return _session.Id;
         }
 
         private List<SongModel> SortInRandomOrder(List<SongModel> songs)

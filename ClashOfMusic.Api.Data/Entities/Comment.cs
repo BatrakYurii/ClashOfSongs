@@ -11,13 +11,13 @@ namespace ClashOfMusic.Api.Data.Entities
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        public string UserAuthorId { get; set; }
-        public User UserAuthor { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
         public int PlayListId { get; set; }
         public PlayList? PlayList { get; set; }
-        public string? UserRecipientId { get; set; }
-        public User? UserRecipient { get; set; }
-        public RecipientEnum RecipientType {get;set;}
+        //public string? UserRecipientId { get; set; }
+        //public User? UserRecipient { get; set; }
+        //public RecipientEnum RecipientType {get;set;}
 
     }
 }

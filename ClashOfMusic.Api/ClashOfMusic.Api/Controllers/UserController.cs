@@ -21,21 +21,27 @@ namespace ClashOfMusic.Api.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IUserServices _userServices;
-        public UserController(UserManager<User> userManager, IMapper mapper, IUserServices userServices)
+        private readonly IPlayListServices _playListServices;
+        public UserController(UserManager<User> userManager, IMapper mapper, IUserServices userServices, IPlayListServices playListServices)
         {
             _userManager = userManager;
             _mapper = mapper;
             _userServices = userServices;
+            _playListServices = playListServices;
         }
 
-        [Authorize]
         [HttpGet]
+        [Route("GetById/{id}")]
         public async Task<UserViewModel> GetById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if(user == null)
                 throw new HttpRequestException("User not found");
-            return _mapper.Map<UserViewModel>(user);
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+            var playLists = await _playListServices.GetAllByUserId(id);
+            if (playLists != null)
+                userViewModel.PlayLists = playLists.Take(4).Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
+            return userViewModel;
         }
 
 

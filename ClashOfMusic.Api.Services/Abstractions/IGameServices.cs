@@ -11,6 +11,6 @@ namespace ClashOfMusic.Api.Services.Abstractions
     {
         public IEnumerable<SongModel> GetPair();
         public void Choose(string songId);
-        public void Start(PlayListModel playlist);
+        public string Start(PlayListModel playlist);
     }
 }
