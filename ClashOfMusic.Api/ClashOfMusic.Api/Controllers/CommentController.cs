@@ -43,11 +43,12 @@ namespace ClashOfMusic.Api.Controllers
             await _commentServices.CreateComment(commetModel);
         }
 
-        [HttpPost]
-        [Route("GetPlayListComments/{id}")]
-        public async Task DeleteComment(int commentId, int playListId)
+        [HttpDelete]
+        [Route("Delete/{commentId}")]
+        public async Task DeleteComment(int commentId)
         {
-            await _commentServices.DeleteComment(commentId, playListId);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            await _commentServices.DeleteComment(commentId, userId);
         }
     }
 }

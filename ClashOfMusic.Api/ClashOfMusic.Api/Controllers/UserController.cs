@@ -38,9 +38,9 @@ namespace ClashOfMusic.Api.Controllers
             if(user == null)
                 throw new HttpRequestException("User not found");
             var userViewModel = _mapper.Map<UserViewModel>(user);
-            var playLists = await _playListServices.GetAllByUserId(id);
-            if (playLists != null)
-                userViewModel.PlayLists = playLists.Take(4).Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
+            //var playLists = await _playListServices.GetAllByUserId(id);
+            //if (playLists != null)
+            //    userViewModel.PlayLists = playLists.Take(4).Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
             return userViewModel;
         }
 

@@ -45,12 +45,15 @@ namespace ClashOfMusic.Api.Mapper
             CreateMap<User, UserViewModel>();
             CreateMap<UserPostModel, UserModel>();
             CreateMap<UserModel, User>();
+            CreateMap<User, UserModel>();
+            CreateMap<UserModel, UserViewModel>();
 
             //Comment mapping
             CreateMap<CommentPostModel, CommentModel>();
             CreateMap<CommentModel, Comment>();
             CreateMap<Comment, CommentModel>();
-            CreateMap<CommentModel, CommentViewModel>();
+            CreateMap<CommentModel, CommentViewModel>()
+                .ForMember(dest => dest.Created, opt => opt.MapFrom(src => src.Created.ToString()));
         }
     }
 }

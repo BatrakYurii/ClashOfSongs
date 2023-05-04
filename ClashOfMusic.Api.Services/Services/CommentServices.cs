@@ -22,13 +22,14 @@ namespace ClashOfMusic.Api.Services.Services
         }
         public async Task CreateComment(CommentModel commentModel)
         {
+            commentModel.Created = DateTime.UtcNow;
             var entity = _mapper.Map<Comment>(commentModel);
             await _commentRepository.CreateComment(entity);
         }
 
-        public async Task DeleteComment(int commentId, int playListId)
+        public async Task DeleteComment(int commentId, string userId)
         {
-            await _commentRepository.DeleteComment(commentId, playListId);
+            await _commentRepository.DeleteComment(commentId, userId);
         }
 
         public async Task<IEnumerable<CommentModel>> GetAllPlayListComments(int id)

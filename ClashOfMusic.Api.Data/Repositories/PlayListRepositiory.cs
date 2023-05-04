@@ -98,6 +98,12 @@ namespace ClashOfMusic.Api.Data.Repositories
                 Id = x.Id,
                 Title = x.Title,
                 Description = x.Description,
+                UserId = x.UserId,
+                PreviewImages = x.PreviewImages.Select(z => new Image
+                {
+                    Id = z.Id,
+                    Path = z.Path
+                }),
                 PlayListsSongs = x.PlayListsSongs.Select(y => new PlayListsSongs
                 {
                     Id = y.Id,

@@ -15,6 +15,8 @@ namespace ClashOfMusic.Api.Data.Entities
         public User User { get; set; }
         public int PlayListId { get; set; }
         public PlayList? PlayList { get; set; }
+
+        public DateTime Created { get; set; }
         //public string? UserRecipientId { get; set; }
         //public User? UserRecipient { get; set; }
         //public RecipientEnum RecipientType {get;set;}

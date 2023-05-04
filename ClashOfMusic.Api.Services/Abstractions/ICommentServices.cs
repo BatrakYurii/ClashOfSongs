@@ -11,6 +11,6 @@ namespace ClashOfMusic.Api.Services.Abstractions
     {
         public Task<IEnumerable<CommentModel>> GetAllPlayListComments(int id);
         public Task CreateComment(CommentModel commentModel);
-        public Task DeleteComment(int commentId, int playListId);
+        public Task DeleteComment(int commentId, string userId);
     }
 }

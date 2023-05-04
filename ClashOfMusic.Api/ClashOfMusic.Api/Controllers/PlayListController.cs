@@ -41,7 +41,7 @@ namespace ClashOfMusic.Api.Controllers
                 return null;
             else
             {
-                var playListsViewModels = playList.Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
+                var playListsViewModels = playList.Select(x => _mapper.Map<PlayListViewModel>(x)).Take(4).ToList();
                 return playListsViewModels;
             }
             

@@ -21,16 +21,22 @@ namespace ClashOfMusic.Api.Data.Repositories
         public async Task CreateComment(Comment commentPostModel)
         {
             await _ctx.Comments.AddAsync(commentPostModel);
+            await _ctx.SaveChangesAsync();
         }
 
-        public Task DeleteComment(int commentId, int playListId)
+        public async Task DeleteComment(int commentId, string userId)
         {
-            var playList = _ctx.PlayLists.FirstOrDefaultAsync(x => x.Id == playListId);
+            var comment = await _ctx.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
+            if(comment.UserId == userId)
+            {
+                _ctx.Comments.Remove(comment);
+                await _ctx.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<Comment>> GetAllPlayListComments(int id)
         {
-            var comments = await _ctx.Comments.Where(x => x.PlayListId == id).ToListAsync();
+            var comments = await _ctx.Comments.Where(x => x.PlayListId == id).Include(x => x.User).ToListAsync();
             return comments;
         }
     }
