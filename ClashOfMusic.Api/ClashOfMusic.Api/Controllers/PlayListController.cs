@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using ClashOfMusic.Api.Models.PostModel;
+using ClashOfMusic.Api.Models.QueryParameters;
 using ClashOfMusic.Api.Models.ViewModels;
 using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Models;
+using ClashOfMusic.Api.Services.Models.Parameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +28,14 @@ namespace ClashOfMusic.Api.Controllers
 
         [HttpGet]
         [Route("Get")]
-        public async Task<IEnumerable<PlayListViewModel>> Get()
+        public async Task<object> Get([FromQuery]PaginationPostModel paginationPostModel, [FromQuery]FilterPostModel filterPostModel)
         {
-            var playLists = await _playListServices.GetPlayLists();
-            return playLists.Select(x => _mapper.Map<PlayListViewModel>(x)).ToList();
+            var paginationModel = _mapper.Map<PaginationModel>(paginationPostModel);
+            var filterModel = _mapper.Map<FilterModel>(filterPostModel);
+
+            var playLists = await _playListServices.GetPlayLists(paginationModel, filterModel);
+            var pagination = _mapper.Map<PaginationViewModel>(paginationModel);
+            return new {PlayLists = playLists.Select(x => _mapper.Map<PlayListViewModel>(x)).ToList(), Pagination = pagination };
         }
 
         [HttpGet]

@@ -3,6 +3,10 @@ using ClashOfMusic.Api.Services.Models;
 using AutoMapper;
 using ClashOfMusic.Api.Data.Entities;
 using ClashOfMusic.Api.Models.ViewModels;
+using ClashOfMusic.Api.Services.Models.Parameters;
+using ClashOfMusic.Api.Models.QueryParameters;
+using ClashOfMusic.Api.Data.Parameters;
+using System.Linq.Expressions;
 
 namespace ClashOfMusic.Api.Mapper
 {
@@ -54,6 +58,39 @@ namespace ClashOfMusic.Api.Mapper
             CreateMap<Comment, CommentModel>();
             CreateMap<CommentModel, CommentViewModel>()
                 .ForMember(dest => dest.Created, opt => opt.MapFrom(src => src.Created.ToString()));
+
+            //Pagination mapping
+            CreateMap<PaginationPostModel, PaginationModel>();
+            CreateMap<PaginationModel, Pagination>();
+            CreateMap<Pagination, PaginationModel>();
+            CreateMap<PaginationModel, PaginationViewModel>();
+
+
+            //Filter mapping
+            CreateMap<FilterPostModel, FilterModel>();
+            CreateMap<FilterModel, Filter>()
+                .ConvertUsing((src, dest, ctx) =>
+                {
+                    dest = new Filter();
+                    dest.Predicates = new List<Expression<Func<PlayList, bool>>>();
+
+                    if(!string.IsNullOrEmpty(src.SearchText))
+                    {
+                        dest.Predicates.Add(x => x.Title.ToLower().Trim().Contains(src.SearchText.ToLower().Trim())
+                      || x.Description.ToLower().Trim().Contains(src.SearchText.ToLower().Trim()));
+
+                    }
+                    if (src.Sizes != null && src.Sizes.Length > 0)
+                    {
+                        dest.Predicates.Add(x => src.Sizes.Any(size => x.PlayListsSongs.Count == size));
+                    }
+                    if (dest.Predicates.Count == 0)
+                    {
+                        return null;
+                    }
+
+                    return dest;
+                });
         }
     }
 }

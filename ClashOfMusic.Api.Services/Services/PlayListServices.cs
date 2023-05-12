@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using ClashOfMusic.Api.Data.Abstractions;
 using ClashOfMusic.Api.Data.Entities;
+using ClashOfMusic.Api.Data.Parameters;
 using ClashOfMusic.Api.Services.Abstractions;
 using ClashOfMusic.Api.Services.Models;
+using ClashOfMusic.Api.Services.Models.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,9 +55,18 @@ namespace ClashOfMusic.Api.Services.Services
             return _mapper.Map<PlayListModel>(model);
         }
 
-        public async Task<IEnumerable<PlayListModel>> GetPlayLists()
+        public async Task<IEnumerable<PlayListModel>> GetPlayLists(PaginationModel paginationModel, FilterModel filterModel)
         {
-            var playListModels = await _playListRepository.GetAsync();
+            if(paginationModel.Page == null || paginationModel.PageSize == null)
+            {
+                paginationModel.Page = 1;
+                paginationModel.PageSize = 9;
+            }
+
+            var pagination = _mapper.Map<Pagination>(paginationModel);
+            var filter = _mapper.Map<Filter>(filterModel);
+            var playListModels = await _playListRepository.GetAsync(pagination, filter);
+            _mapper.Map(pagination, paginationModel);
             return playListModels.Select(x => _mapper.Map<PlayListModel>(x)).ToList();
         }
 

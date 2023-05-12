@@ -1,5 +1,6 @@
 ﻿using ClashOfMusic.Api.Data.Abstractions;
 using ClashOfMusic.Api.Data.Entities;
+using ClashOfMusic.Api.Data.Parameters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -83,10 +84,23 @@ namespace ClashOfMusic.Api.Data.Repositories
             return usersPlaylists;
         }
 
-        public async Task<IEnumerable<PlayList>> GetAsync()
+        public async Task<IEnumerable<PlayList>> GetAsync(Pagination pagination, Filter filter)
         {
-            var playLists = await _ctx.PlayLists.Take(100).Include(x => x.PreviewImages).Include(x => x.PlayListsSongs).ThenInclude(x => x.Song).ToListAsync();
-            return playLists;
+            IQueryable<PlayList> result = _ctx.PlayLists;
+
+            if (filter?.Predicates != null)
+            {
+                foreach (var predicate in filter.Predicates)
+                {
+                    result = result.Where(predicate);
+                    Console.WriteLine(result.Count());
+                }
+            }
+
+            var skip = (pagination.Page - 1) * pagination.PageSize;
+            pagination.PageCount = (int)Math.Ceiling(result.Count() / Convert.ToDouble(pagination.PageSize));
+            return await result.Skip(skip).Take(pagination.PageSize).Include(x => x.PreviewImages).Include(x => x.PlayListsSongs).ThenInclude(x => x.Song).ToListAsync();
+            //return playLists;
         }
 
         public async Task<PlayList> GetByIdAsync(int id)
